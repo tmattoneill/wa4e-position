@@ -12,19 +12,19 @@
 
 	if ( isset($_POST["add"]) ) {          // Coming from form
 
-		foreach ($_POST as $form_value) {  // Check all fields for empty strings
+		foreach ($_POST as $key => $value) {  // Check all fields for empty strings
 		
-			if ($form_value == "") {
+			if ($value == "") {
 				$_SESSION["error"] = ERR_EMPTY_FIELDS;
 				header("Location: add.php");
 				exit;
 			}
-		}
 
-		if ( isset($_POST["year"]) && ! is_numeric($_POST["year"]) ) {
-			$_SESSION["error"] = "Year must contain only numbers";
-			header("Location add.php");
-			exit;
+			if ( strpos($key, "year") && (! is_numeric($_POST[$key])) ) {
+				$_SESSION["error"] = "Year must contain only numbers";
+				header("Location add.php");
+				exit;
+			}
 		}
 
 		if (! strrpos($_POST["email"], "@") ) { // Check for @ in email address
