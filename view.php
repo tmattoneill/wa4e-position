@@ -34,7 +34,7 @@
 <body>
 <div class="container" id="main-content">
 
-	<h1>Profile for <?= $profile["first_name"] ?></h1>
+	<h1>Profile for: <?= $profile["first_name"] ?></h1>
 	<?php
 		foreach ($profile as $key => $value) {
 			$title = str_replace("_", " ", $key);
