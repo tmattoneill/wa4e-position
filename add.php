@@ -113,6 +113,7 @@
 
 				$('#position_fields').append(
 					'<div id="position' + num_positions + '"> \
+					<h3>Position: ' + num_positions + '</h3> \
 					 <p>Year: <input type="text" name="year' + num_positions + '" value="" /> \
 					 <input type="button" value="-" \
 					 	onclick="$(\'#position' + num_positions + '\').remove(); num_positions--; return false;"></p> \
