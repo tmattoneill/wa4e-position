@@ -41,15 +41,25 @@ function validateEmail(em) {
 
 }
 
+/*
+function validateYear(year.val) {
+	if ( typeof year == 'number' ) {
+		return true;
+	} else {
+		alert("Year must be a number.");
+	}
+}
+*/
 function validateAdd(arrTagNames) {
 	// arrTagName is an array of one or more form tag names to validate against
-
+	console.log("VALIDATING...");
 	for (const tag of arrTagNames) {
 
 		var fields = document.getElementsByTagName(tag);
 
 		for (const field of fields) {
 			if ( field.value == "" ) {
+				console.log("ERRROR:".field.value);
 				alert ("All fields are required");
 				return false;
 			}
@@ -64,3 +74,4 @@ function validateAdd(arrTagNames) {
 	return true;
 
 }
+
