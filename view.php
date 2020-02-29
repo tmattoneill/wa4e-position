@@ -18,6 +18,13 @@
 		$stmt->execute();
 		$profile = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
+		$sql = "SELECT * FROM position WHERE profile_id=? ORDER BY year DESC";
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindValue(1, $profile_id);
+		$stmt->execute();
+		$position = $stmt->fetch(PDO::FETCH_ASSOC);
+
 	} else {
 		header("Location: index.php");
 		$_SESSION["error"] = ERR_NO_PROFILE;
@@ -39,9 +46,19 @@
 		foreach ($profile as $key => $value) {
 			$title = str_replace("_", " ", $key);
 			$title = ucwords($title);
+			$value = htmlentities($value);
 
 			print "<p>$title: $value</<p>";
 		}
+
+		if ( $position )  {
+			print "<h3>Position</h3>\n<ul>";
+			do {
+				print "<li>" . $position['year'] . ": " . $position['description'] . "</li>";				
+			} while ( $position = $stmt->fetch(PDO::FETCH_ASSOC) );
+		}
+
+			print "</ul>";
 	?>
 	<p><a href="index.php">Done</a></p>
 

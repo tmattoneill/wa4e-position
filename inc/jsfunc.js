@@ -29,6 +29,7 @@ function doValidate() {
 	return false; // function
 }
 
+
 function validateEmail(em) {
 
 		// email formation check
