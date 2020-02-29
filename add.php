@@ -115,19 +115,19 @@
 	<form name="add_user" method="post" action="add.php">
 		<div class="form-group">
 			<label for="txt_fname">First Name</label>
-			<input type="text" name="first_name" id="txt_fname" class="form-control" value="Matt">
+			<input type="text" name="first_name" id="txt_fname" class="form-control">
 
 			<label for="txt_lname">Last Name</label>
-			<input type="text" name="last_name" id="lname" class="form-control" value="ONEILL"><br>
+			<input type="text" name="last_name" id="lname" class="form-control"><br>
 			
 			<label for="txt_email">Email</label>
-			<input type="text" name="email" id="txt_email" class="form-control" value="t@m.co"><br>
+			<input type="text" name="email" id="txt_email" class="form-control"><br>
 
 			<label for="txt_headline">Headline</label>
-			<input type="text" name="headline" id="txt_head" class="form-control" value="Another One"><br>
+			<input type="text" name="headline" id="txt_head" class="form-control"><br>
 
 			<label for="txt_fname">Summary</label>
-			<textarea name="summary" id="txta_summary" rows="10" class="form-control"><?= $summary_str ?></textarea><br>
+			<textarea name="summary" id="txta_summary" rows="10" class="form-control"></textarea><br>
 
 			<!-- Position Management -->
 			<p>Position <input type="submit" id="add_position" name="add_pos" value="+"></p>

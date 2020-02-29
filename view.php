@@ -54,7 +54,9 @@
 		if ( $position )  {
 			print "<h3>Position</h3>\n<ul>";
 			do {
-				print "<li>" . $position['year'] . ": " . $position['description'] . "</li>";				
+				$year = htmlentities($position["year"]);
+				$desc = htmlentities($position["description"]);
+				print "<li>" . $year . ": " . $desc . "</li>";				
 			} while ( $position = $stmt->fetch(PDO::FETCH_ASSOC) );
 		}
 
