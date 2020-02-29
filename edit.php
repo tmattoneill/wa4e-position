@@ -162,6 +162,7 @@
 							$desc = htmlentities($position["description"]);
 							$rank = $position["ranking"];
 
+							print "<h3>Position: $rank</h3>";
 							print '<p>Year: <input type="text" name="year[' . $rank . ']" value="' . $year . '">'; 
 							print '<input type="button" name="rem_pos" value="-"></p>';
 							print '<textarea name="desc[' . $rank . ']" rows="8" cols="80">' . $desc . '</textarea>';
