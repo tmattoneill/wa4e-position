@@ -15,8 +15,6 @@
 
 		foreach ($_POST as $key => $value) {  // Check all fields for empty strings
 			
-			// 
-			
 			if ($value == "") {
 				$_SESSION["error"] = ERR_EMPTY_FIELDS;
 				header("Location: add.php");
@@ -58,6 +56,13 @@
     	if (! empty($_POST['position']) && is_array($_POST['position'])) {
 
     		foreach ( $_POST['position'] as $pos => $rank) {
+
+	    		if (! is_numeric($_POST['year'][$pos]))  {
+	    			$_SESSION["error"] = "Year must contain only numbers";
+					header("Location add.php");
+					exit();
+	    		}
+
 	    		$stmt = $pdo->prepare('INSERT INTO Position (profile_id, ranking, year, description) VALUES ( :pid, :rank, :year, :desc)');
 
 				$stmt->execute(array(
@@ -79,11 +84,11 @@
 
 	function validatePos() {
   		for($i=1; $i<=9; $i++) {
-		    if ( ! isset($_POST['year'.$i]) ) continue;
-		    if ( ! isset($_POST['desc'.$i]) ) continue;
+		    if ( ! isset($_POST['year'][$i]) ) continue;
+		    if ( ! isset($_POST['desc'][$i]) ) continue;
 
-		    $year = $_POST['year'.$i];
-		    $desc = $_POST['desc'.$i];
+		    $year = $_POST['year'][$i];
+		    $desc = $_POST['desc'][$i];
 
 		    if ( strlen($year) == 0 || strlen($desc) == 0 ) {
 		      return "All fields are required";

@@ -41,15 +41,17 @@ function validateEmail(em) {
 
 }
 
-/*
-function validateYear(year.val) {
+
+function validateYear(year) {
+
 	if ( typeof year == 'number' ) {
 		return true;
 	} else {
 		alert("Year must be a number.");
 	}
 }
-*/
+
+
 function validateAdd(arrTagNames) {
 	// arrTagName is an array of one or more form tag names to validate against
 	console.log("VALIDATING...");
