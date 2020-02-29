@@ -1,32 +1,50 @@
 <?php
 	require_once("inc/config.php");
 	
-	if (! isset($_SESSION["user_id"])) {   // Not logged in
+
+	// Not logged in. Throw fatl NO ACCESS error and terminate. No real
+	// reason not to redirect to the index page here or prompt for a
+	// login.
+	if (! isset($_SESSION["user_id"])) {
 		die(ERR_NO_ACCESS);
 	}
 
-	if ( isset($_POST["cancel"])) {        // User has clicked Cancel on form
+	// User has clicked Cancel on form. Back out o the index page
+	if ( isset($_POST["cancel"])) {
 		header("Location: index.php");
 		exit;
 	}
 
+	// Check that the profile_id passed in or specified in the GET portion of
+	// the URL is valid. If not, throw an error and redirect to the index page
+	// with an error.
 	if (! exists_in_db($pdo, "profile_id", "Profile", $_GET["profile_id"])) {
 		$_SESSION["error"] = ERR_NO_PROFILE;
 		header("Location: index.php");		
 		exit;
 
+
+	// OK! We are actually on an edit page with a valid, logged in user. This is 
+	// the GET arrival method, meaning they have come from the index page or
+	// manually entered a (valid) profile id in profile_id = ?		
 	} else {
 
-		// Grab the row and fields for the car to pre-populate the form. Also
+		// Grab the row and fields for the profile to pre-populate the form. Also
 		// Check to make sure the user has edit rights on this record.
+		$profile_id = $_GET['profile_id'];
         $stmt = $pdo->prepare("SELECT * FROM Profile where profile_id = :pid");
         $stmt->execute(array(":pid" => $_GET['profile_id']));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ( $row === false ) {
-            $_SESSION['error'] = 'Bad value for Profile ID';
+
+        // No row found or returned from the query. This means there's no profile
+        // for this user.
+        // WE SHOULD BE ABLE TO REMOVE THIS CODEBLOCK AS WE DO THIS CHECK UP ABOVE
+        // =======================================================================
+        /*if ( $row === false ) {
+            $_SESSION['error'] = ERR_NO_PROFILE;
             header( 'Location: index.php' ) ;
             exit;
-        }
+        }*/
 
         $fn = htmlentities($row['first_name']);
         $ln = htmlentities($row['last_name']);
@@ -35,11 +53,27 @@
         $su = htmlentities($row['summary']);
         $ui = $row['user_id'];
 
+        // Users can only edit information associated with their user_id. If
+        // a user tries to get in to edit an unauthoirised record, they will 
+        // be redirected to the READ ONLY view.php of the data.
         if ( $ui !== $_SESSION["user_id"]) {
         	$_SESSION['error'] = 'You do no have permission to edit this record.';
 	    	header( 'Location: view.php?profile_id=' .  $_GET['profile_id']) ;
 	    	exit;
         }
+
+        // Additional SQL statment pulls the postions associated with the current profile
+		// orders them in descending order by the ranking (ordinal); this could be changed to the
+		// year etc. field trivially.
+		$sql = "SELECT * FROM position WHERE profile_id=? ORDER BY ranking ASC";
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindValue(1, $profile_id);
+		$stmt->execute();
+		$position = $stmt->fetch(PDO::FETCH_ASSOC); // <-- this is the first row
+													//     of data returned from
+													//     the query. Or it is 
+													//     false if no positions
+													//	   were found.
 	}
 
 	if ( isset($_POST["save"]) ) {  // Coming from form
@@ -117,6 +151,27 @@
 			<label for="txt_fname">Summary</label>
 			<textarea name="summary" id="txta_summary" rows="10" class="form-control"><?= $su ?></textarea><br>
 
+			<!-- Position Management -->
+			<p>Position <input type="submit" id="add_position" name="add_pos" value="+"></p>
+			<div id="position_fields">
+				<?php
+					if ( $position )  {
+						//print "<h3>Position $position[ranking]:</h3>\n<ul>";
+						do {
+							$year = htmlentities($position["year"]);
+							$desc = htmlentities($position["description"]);
+							$rank = $position["ranking"];
+
+							print '<p>Year: <input type="text" name="year[' . $rank . ']" value="' . $year . '">'; 
+							print '<input type="button" name="rem_pos" value="-"></p>';
+							print '<textarea name="desc[' . $rank . ']" rows="8" cols="80">' . $desc . '</textarea>';
+						} while ( $position = $stmt->fetch(PDO::FETCH_ASSOC) );
+					}
+				?>
+			</div>
+			<!-- End Position Management -->
+
+			<!-- Submit & Cancel Form -->
 			<input type="submit" name="save" value="Save" 
 				   onclick='return validateAdd(["input", "textarea"]);' 
 				   class="btn btn-primary">
@@ -125,6 +180,37 @@
 	</form>
 
 </div>
+	<script>
+		<!-- Dynamically add Position year and description via jquery -->
+		num_positions = 0;
+
+		$(document).ready(function(){
+			window.console && console.log("Document ready called");
+			$('#add_position').click( function(event) {
+				event.preventDefault();
+				if ( num_positions >= 9 ) {
+					alert("Maximum of nine position entries exceeded.");
+					return;
+				}
+
+				num_positions++;
+
+				window.console && console.log("Adding position " + num_positions);
+
+				$('#position_fields').append(
+					'<div id="position' + num_positions + '"> \
+					<h3>Position: ' + num_positions + '</h3> \
+					 <p>Year: <input type="text" \
+					 				 name="year[' + num_positions + ']" \
+					 				 value="" /> \
+					 <input type="button" name="rem_pos" value="-" \
+					 	onclick="$(\'#position' + num_positions + '\').remove(); num_positions--; return false;"></p> \
+					 <textarea name="desc[' + num_positions + ']" rows="8" cols="80"></textarea> \
+					 <input type="hidden" name="position[' + num_positions + ']" value="' + num_positions + '"> \
+					 </div>');				
+			});
+		});
+	</script>
 
 	<?php include("inc/footer.php");?>
 </body>
