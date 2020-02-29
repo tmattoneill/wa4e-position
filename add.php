@@ -130,7 +130,7 @@
 			<textarea name="summary" id="txta_summary" rows="10" class="form-control"><?= $summary_str ?></textarea><br>
 
 			<!-- Position Management -->
-			<p>Position <input type="submit" id="add_position" value="+"></p>
+			<p>Position <input type="submit" id="add_position" name="add_pos" value="+"></p>
 			<div id="position_fields">
 			</div>
 			<!-- End Position Management -->
@@ -167,7 +167,7 @@
 					 <p>Year: <input type="text" \
 					 				 name="year[' + num_positions + ']" \
 					 				 value="" /> \
-					 <input type="button" value="-" \
+					 <input type="button" name="rem_pos" value="-" \
 					 	onclick="$(\'#position' + num_positions + '\').remove(); num_positions--; return false;"></p> \
 					 <textarea name="desc[' + num_positions + ']" rows="8" cols="80"></textarea> \
 					 <input type="hidden" name="position[' + num_positions + ']" value="' + num_positions + '"> \

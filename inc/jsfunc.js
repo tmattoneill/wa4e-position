@@ -1,7 +1,7 @@
 function doValidate() {
 
 	// validate password field
-	console.log('Validating password...');
+	console.log('Validating usename and password...');
 	try {
 		pw = document.getElementById('pwd_pass').value;
 		em = document.getElementById('txt_email').value;
@@ -44,10 +44,11 @@ function validateEmail(em) {
 
 function validateYear(year) {
 
-	if ( typeof year == 'number' ) {
+	if ( ! isNaN(year)) {
 		return true;
 	} else {
 		alert("Year must be a number.");
+		return false;
 	}
 }
 
@@ -60,15 +61,16 @@ function validateAdd(arrTagNames) {
 		var fields = document.getElementsByTagName(tag);
 
 		for (const field of fields) {
+			// Check that all fields are completed
 			if ( field.value == "" ) {
-				console.log("Error:".field.value);
+				console.log("Error: ".field.value);
 				alert ("All fields are required");
 				return false;
 			}
-
-			if ( field.getAttribute("name").search("year") > 0 ) {
-				console.log (field.getAttribute("name"));
-				validateYear( field.value );
+			// Check that the Year fields are numberic (e.g. 1999)
+			// There may be up to 9 of these so need to check them all.
+			if ( field.getAttribute("name").search("year") >= 0 ) {
+				return (validateYear( field.value ));
 			}
 		}
 	}
