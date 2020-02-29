@@ -54,16 +54,21 @@ function validateYear(year) {
 
 function validateAdd(arrTagNames) {
 	// arrTagName is an array of one or more form tag names to validate against
-	console.log("VALIDATING...");
+	console.log("Validating form...");
 	for (const tag of arrTagNames) {
 
 		var fields = document.getElementsByTagName(tag);
 
 		for (const field of fields) {
 			if ( field.value == "" ) {
-				console.log("ERRROR:".field.value);
+				console.log("Error:".field.value);
 				alert ("All fields are required");
 				return false;
+			}
+
+			if ( field.getAttribute("name").search("year") > 0 ) {
+				console.log (field.getAttribute("name"));
+				validateYear( field.value );
 			}
 		}
 	}

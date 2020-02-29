@@ -57,12 +57,6 @@
 
     		foreach ( $_POST['position'] as $pos => $rank) {
 
-	    		if (! is_numeric($_POST['year'][$pos]))  {
-	    			$_SESSION["error"] = "Year must contain only numbers";
-					header("Location add.php");
-					exit();
-	    		}
-
 	    		$stmt = $pdo->prepare('INSERT INTO Position (profile_id, ranking, year, description) VALUES ( :pid, :rank, :year, :desc)');
 
 				$stmt->execute(array(
