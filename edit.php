@@ -1,4 +1,6 @@
-<?php
+<?php // edit.php 
+	  // author: Matt O'Neill
+	  // February, 2020
 	require_once("inc/config.php");
 	
 
@@ -155,8 +157,10 @@
 			<p>Position <input type="submit" id="add_position" name="add_pos" value="+"></p>
 			<div id="position_fields">
 				<?php
+					$max_pos = 0;
+
 					if ( $position )  {
-						//print "<h3>Position $position[ranking]:</h3>\n<ul>";
+
 						do {
 							$year = htmlentities($position["year"]);
 							$desc = htmlentities($position["description"]);
@@ -166,8 +170,15 @@
 							print '<p>Year: <input type="text" name="year[' . $rank . ']" value="' . $year . '">'; 
 							print '<input type="button" name="rem_pos" value="-"></p>';
 							print '<textarea name="desc[' . $rank . ']" rows="8" cols="80">' . $desc . '</textarea>';
+
 						} while ( $position = $stmt->fetch(PDO::FETCH_ASSOC) );
+
+						$max_pos = $rank; // this only works here because we've sorted in ascending order
+										  // an improvement would be to read in each position rank and then
+										  // grab the max value from that set.
 					}
+
+					print "<script>var max_postions = " . $max_pos . ";</script>";
 				?>
 			</div>
 			<!-- End Position Management -->
@@ -182,8 +193,9 @@
 
 </div>
 	<script>
-		<!-- Dynamically add Position year and description via jquery -->
-		num_positions = 0;
+		<!-- /* Dynamically add Position year and description via jquery */ -->
+		num_positions = max_postions; // this is coming from the javascript above, pulling in the 
+									  // max rank number from the existing records.
 
 		$(document).ready(function(){
 			window.console && console.log("Document ready called");
