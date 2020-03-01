@@ -110,6 +110,32 @@
 	        ':su' => $_POST['summary'],
     	    ':pid' => $_POST['profile_id'])
     	);
+
+
+	    // Clear out the old position entries
+	    // and re-add the new set of positions
+	    $stmt = $pdo->prepare('DELETE FROM Position WHERE profile_id=:pid');
+	    $stmt->execute(array( ':pid' => $_REQUEST['profile_id']));
+
+	    // Insert the position entries
+	    $rank = 1;
+	    for($i=1; $i<=9; $i++) {
+	        if ( ! isset($_POST['year'][$i]) ) continue;
+	        if ( ! isset($_POST['desc'][$i]) ) continue;
+
+	        $year = $_POST['year'][$i];
+	        $desc = $_POST['desc'][$i];
+
+	        $stmt = $pdo->prepare('INSERT INTO Position (profile_id, ranking, year, description)
+	        					   VALUES ( :pid, :rank, :year, :desc)');
+	        $stmt->execute(array(
+	            ':pid' => $_REQUEST['profile_id'],
+	            ':rank' => $rank,
+	            ':year' => $year,
+	            ':desc' => $desc)
+	        );
+	        $rank++;
+	    }
     	
     	$_SESSION["success"] = "Record updated";
     	header("Location: index.php");
@@ -166,10 +192,12 @@
 							$desc = htmlentities($position["description"]);
 							$rank = $position["ranking"];
 
+							print '<div id="position' . $rank . '">';
 							print "<h3>Position: $rank</h3>";
 							print '<p>Year: <input type="text" name="year[' . $rank . ']" value="' . $year . '">'; 
-							print '<input type="button" name="rem_pos" value="-"></p>';
+							print '<input type="button" name="rem_pos" value="-" onclick="$(\'#position' . $rank . '\').remove(); return false;"></p>';
 							print '<textarea name="desc[' . $rank . ']" rows="8" cols="80">' . $desc . '</textarea>';
+							print '</div>';
 
 						} while ( $position = $stmt->fetch(PDO::FETCH_ASSOC) );
 
